@@ -12,7 +12,7 @@ import Positions from "./positons";
 import Draggable1 from "react-draggable";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { WARN_MSG_POS, WARN_MSG_SIZE } from "../constants";
+import { WARN_MSG_POS } from "../constants";
 
 export const EventBody = (props) => {
   const { moves, setMoves, actions, setActions, setActions2, actions2 } = props;
@@ -30,7 +30,7 @@ export const EventBody = (props) => {
   let angle2 = 0;
 
   const [hello, setHello] = React.useState(false);
-  const [hello2, setHello2] = React.useState(false);
+  const [hello2] = React.useState(false);
   const [theme] = React.useState(false);
   const [displayAddIcon, setDisplayAddIcon] = React.useState(true);
   const [sprite, setSprite] = React.useState(
@@ -144,7 +144,6 @@ export const EventBody = (props) => {
     }, i * 1500);
   }
   function handleCollision(temp, action1) {
-    const otherSprite = action1 ? ref2.current : ref.current;
     const otherPosition = parseInt(action1 ? r2.slice(0, -1) : r.slice(0, -1));
     const bounceBackDistance = 10;
 
@@ -294,30 +293,10 @@ export const EventBody = (props) => {
         break;
     }
   };
-  const reverseLastAction = (action, idx, action1) => {
-    switch (action.todo) {
-      case "move x by 10":
-        moveLeft(idx, action1);
-        break;
-      case "move y by 10":
-        moveDown(idx, action1);
-        break;
-      case "move x by -10":
-        moveRight(idx, action1);
-        break;
-      case "move y by -10":
-        moveUp(idx, action1);
-        break;
-      case "rotate 45":
-        rotate(-45, idx, action1);
-        break;
-      default:
-        break;
-    }
-  };
 
   function clearTimeouts() {
-    var highestTimeoutId = setTimeout(";");
+    var highestTimeoutId = setTimeout(() => {});
+
     for (var i = 0; i < highestTimeoutId; i++) {
       clearTimeout(i);
     }
@@ -360,7 +339,7 @@ export const EventBody = (props) => {
     actions &&
       actions.map((item, i) => {
         startActions(item.todo, i, true);
-        return;
+        return null;
       });
   }
   function runAction2() {
@@ -368,7 +347,7 @@ export const EventBody = (props) => {
       actions2 &&
       actions2.map((item, i) => {
         startActions(item.todo, i, false);
-        return;
+        return null;
       });
   }
 
@@ -580,6 +559,7 @@ export const EventBody = (props) => {
                 ) : null}
                 <img
                   src={sprite}
+                  alt=""
                   draggable="false"
                   style={{
                     cursor: "pointer",
@@ -608,6 +588,7 @@ export const EventBody = (props) => {
                   ) : null}
                   <img
                     src={sprite2}
+                    alt=""
                     draggable="false"
                     style={{
                       cursor: "pointer",

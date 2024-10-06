@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import "./styles.css";
 import { Box } from "@mui/material";
 
@@ -51,6 +51,7 @@ export const Sprites = (props) => {
         >
           <img
             src={item.src}
+            alt=""
             style={{
               matginBottom: "30px",
               height: "120px",
