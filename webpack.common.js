@@ -6,7 +6,6 @@ module.exports = {
     app: "./src/index.js",
   },
   output: {
-    // filename: "app.js",
     path: path.resolve(__dirname, "public"),
   },
   module: {
@@ -20,14 +19,7 @@ module.exports = {
             loader: "postcss-loader",
             options: {
               postcssOptions: {
-                plugins: [
-                  [
-                    "postcss-preset-env",
-                    {
-                      // Options
-                    },
-                  ],
-                ],
+                plugins: [["postcss-preset-env", {}]],
               },
             },
           },

@@ -27,15 +27,10 @@ export default function App() {
       complete = actions,
       complete2 = actions2;
 
-    // take a move to drag and drop
     add = active[source.index];
-
-    // Destination Logic
     if (destination.droppableId === "MovesActions") {
-      // add the move to action 1
       complete.push(add);
     } else {
-      //add the move to action 2
       complete2.push(add);
     }
     setActions2(complete2);

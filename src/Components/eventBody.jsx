@@ -40,7 +40,6 @@ export const EventBody = (props) => {
 
   console.log("rendering...");
   function checkCollision() {
-    // Check if both refs are defined
     if (ref.current && ref2.current) {
       const rect1 = ref.current.getBoundingClientRect();
       const rect2 = ref2.current.getBoundingClientRect();
@@ -52,11 +51,10 @@ export const EventBody = (props) => {
         rect1.y + rect1.height > rect2.y
       );
     }
-    return false; // Return false if either ref is undefined
+    return false;
   }
 
   function swapAnimations() {
-    // Swap actions when characters collide
     const tempActions = [...actions];
     const tempActions2 = [...actions2];
     setActions(tempActions2);
@@ -84,7 +82,6 @@ export const EventBody = (props) => {
   }
 
   function moveUp(i, action1) {
-    //move up top - 50
     setTimeout(() => {
       let temp = parseInt(action1 ? t.slice(0, -1) : t2.slice(0, -1));
       temp = temp - 30;
@@ -93,15 +90,14 @@ export const EventBody = (props) => {
         return;
       }
       transform(temp, false, action1);
-      // Check for collision immediately after moving
+
       if (checkCollision()) {
         handleCollision(temp, action1);
-        return; // Stop further actions if collision occurs
+        return;
       }
     }, i * 1500);
   }
   function moveDown(i, action1) {
-    //move down top + 50
     setTimeout(() => {
       let temp = parseInt(action1 ? t.slice(0, -1) : t2.slice(0, -1));
       temp = temp + 30;
@@ -110,7 +106,6 @@ export const EventBody = (props) => {
         return;
       }
       transform(temp, false, action1);
-      // Check for collision immediately after moving
       if (checkCollision()) {
         handleCollision(temp, action1);
         return;
@@ -153,17 +148,14 @@ export const EventBody = (props) => {
     const otherPosition = parseInt(action1 ? r2.slice(0, -1) : r.slice(0, -1));
     const bounceBackDistance = 10;
 
-    // Adjust positions for bounce-back
     if (action1) {
-      transform(otherPosition - bounceBackDistance, true, false); // Move second sprite left
-      transform(temp - bounceBackDistance, true, action1); // Move first sprite back right
+      transform(otherPosition - bounceBackDistance, true, false);
+      transform(temp - bounceBackDistance, true, action1);
     } else {
-      transform(otherPosition + bounceBackDistance, true, true); // Move first sprite right
-      transform(temp + bounceBackDistance, true, action1); // Move second sprite back left
+      transform(otherPosition + bounceBackDistance, true, true);
+      transform(temp + bounceBackDistance, true, action1);
     }
-
-    // Continue actions after the collision
-    swapAnimations(); // Swap actions on collision, then continue the loop
+    swapAnimations();
   }
 
   function moveXY(xInput, yInput, random, i, action1) {
@@ -222,43 +214,43 @@ export const EventBody = (props) => {
   const startActions = (action, idx, action1, reverse = false) => {
     switch (action) {
       case "move x by 10": {
-        if (reverse) moveLeft(idx, action1); // Reverse direction if needed
+        if (reverse) moveLeft(idx, action1);
         else moveRight(idx, action1);
         break;
       }
       case "move y by 10": {
-        if (reverse) moveDown(idx, action1); // Reverse direction if needed
+        if (reverse) moveDown(idx, action1);
         else moveUp(idx, action1);
         break;
       }
       case "move x by -10": {
-        if (reverse) moveRight(idx, action1); // Reverse direction if needed
+        if (reverse) moveRight(idx, action1);
         else moveLeft(idx, action1);
         break;
       }
       case "move y by -10": {
-        if (reverse) moveUp(idx, action1); // Reverse direction if needed
+        if (reverse) moveUp(idx, action1);
         else moveDown(idx, action1);
         break;
       }
       case "rotate 45": {
-        rotate(reverse ? -45 : 45, idx, action1); // Reverse rotate if needed
+        rotate(reverse ? -45 : 45, idx, action1);
         break;
       }
       case "rotate 90": {
-        rotate(reverse ? -90 : 90, idx, action1); // Reverse rotate if needed
+        rotate(reverse ? -90 : 90, idx, action1);
         break;
       }
       case "rotate 135": {
-        rotate(reverse ? -135 : 135, idx, action1); // Reverse rotate if needed
+        rotate(reverse ? -135 : 135, idx, action1);
         break;
       }
       case "rotate 180": {
-        rotate(reverse ? -180 : 180, idx, action1); // Reverse rotate if needed
+        rotate(reverse ? -180 : 180, idx, action1);
         break;
       }
       case "rotate 360": {
-        rotate(reverse ? -360 : 360, idx, action1); // Reverse rotate if needed
+        rotate(reverse ? -360 : 360, idx, action1);
         break;
       }
       case "random position": {
@@ -273,7 +265,6 @@ export const EventBody = (props) => {
       case "repeat": {
         const actionsToRepeat = action1 ? actions : actions2;
 
-        // Track the reverse state for the current loop
         let isReversed = reverse;
 
         const runNextAction = (currentIndex) => {
@@ -284,24 +275,18 @@ export const EventBody = (props) => {
               action1,
               isReversed
             );
-
-            // Check for collision after performing each action
             if (checkCollision()) {
-              // Handle the collision, and reverse the direction for subsequent actions
               handleCollision(
                 parseInt(action1 ? r.slice(0, -1) : r2.slice(0, -1)),
                 action1
               );
-
-              // Reverse the direction for the next action and continue the loop
-              isReversed = !isReversed; // Toggle reverse state
+              isReversed = !isReversed;
             }
 
-            // Continue to the next action after a short delay
             setTimeout(() => runNextAction(currentIndex + 1), 1500);
           }
         };
-        runNextAction(0); // Start the repeat loop from the first action
+        runNextAction(0);
         break;
       }
 
@@ -309,26 +294,23 @@ export const EventBody = (props) => {
         break;
     }
   };
-
-  // Helper function to reverse the last action upon collision
   const reverseLastAction = (action, idx, action1) => {
     switch (action.todo) {
       case "move x by 10":
-        moveLeft(idx, action1); // Reverse move right
+        moveLeft(idx, action1);
         break;
       case "move y by 10":
-        moveDown(idx, action1); // Reverse move up
+        moveDown(idx, action1);
         break;
       case "move x by -10":
-        moveRight(idx, action1); // Reverse move left
+        moveRight(idx, action1);
         break;
       case "move y by -10":
-        moveUp(idx, action1); // Reverse move down
+        moveUp(idx, action1);
         break;
       case "rotate 45":
-        rotate(-45, idx, action1); // Reverse rotate
+        rotate(-45, idx, action1);
         break;
-      // Add other cases as needed
       default:
         break;
     }
