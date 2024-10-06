@@ -1,0 +1,9 @@
+# Ensure all text files use LF
+* text=auto
+
+# Force LF for JavaScript files
+*.js text eol=lf
+
+# Force LF for Markdown and JSON files
+*.md text eol=lf
+*.json text eol=lf
