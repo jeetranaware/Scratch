@@ -52,7 +52,7 @@ export default function Navbar() {
               </DisclosureButton>
             </div>
 
-            <div className="flex flex-1 items-center justify-center ml-[-4rem] sm:items-stretch sm:justify-start">
+            <div className="flex flex-1 items-center justify-center ml-[-3rem] sm:items-stretch sm:justify-start">
               <div className="flex flex-shrink-0 items-center">
                 <img alt="Your Company" src={Logo} className="h-8 w-auto" />
               </div>

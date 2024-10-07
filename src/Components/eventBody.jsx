@@ -84,7 +84,7 @@ export const EventBody = (props) => {
   function moveUp(i, action1) {
     setTimeout(() => {
       let temp = parseInt(action1 ? t.slice(0, -1) : t2.slice(0, -1));
-      temp = temp - 30;
+      temp = temp - 15;
       if (temp < -140) {
         refresh(WARN_MSG_POS);
         return;
@@ -100,7 +100,7 @@ export const EventBody = (props) => {
   function moveDown(i, action1) {
     setTimeout(() => {
       let temp = parseInt(action1 ? t.slice(0, -1) : t2.slice(0, -1));
-      temp = temp + 30;
+      temp = temp + 15;
       if (temp > 140) {
         refresh(WARN_MSG_POS);
         return;
@@ -115,7 +115,7 @@ export const EventBody = (props) => {
   function moveRight(i, action1) {
     setTimeout(() => {
       let temp = parseInt(action1 ? r.slice(0, -1) : r2.slice(0, -1));
-      temp = temp + 30;
+      temp = temp + 15;
       if (temp > 290) {
         refresh(WARN_MSG_POS);
         return;
@@ -131,7 +131,7 @@ export const EventBody = (props) => {
   function moveLeft(i, action1) {
     setTimeout(() => {
       let temp = parseInt(action1 ? r.slice(0, -1) : r2.slice(0, -1));
-      temp = temp - 30;
+      temp = temp - 15;
       if (temp < -290) {
         refresh(WARN_MSG_POS);
         return;
@@ -145,7 +145,7 @@ export const EventBody = (props) => {
   }
   function handleCollision(temp, action1) {
     const otherPosition = parseInt(action1 ? r2.slice(0, -1) : r.slice(0, -1));
-    const bounceBackDistance = 10;
+    const bounceBackDistance = 20;
 
     if (action1) {
       transform(otherPosition - bounceBackDistance, true, false);
