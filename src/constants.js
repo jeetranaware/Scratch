@@ -49,6 +49,27 @@ export const MOVES = [
     id: 12,
     todo: "rotate 180",
   },
+  {
+    id: 7,
+    todo: "say hello",
+  },
+  {
+    id: 13,
+    todo: "size increase",
+  },
+  {
+    id: 14,
+    todo: "size decrease",
+  },
+
+  {
+    id: 16,
+    todo: "when the sprite clicked",
+  },
+  {
+    id: 17,
+    todo: "when space key clicked",
+  },
 ];
 export const WARN_MSG_SIZE = "Size out of bounds";
 export const WARN_MSG_POS = "Position out of  bounds";

@@ -14,10 +14,12 @@ export const Sprites = (props) => {
       src: require("../Assets/images/jerry1.png"),
     },
   ];
+
   function handleClick(src) {
     console.log("clicked");
     displayAddIcon ? setSprite(src) : setSprite2(src);
   }
+
   return (
     <Box
       sx={{
@@ -32,6 +34,7 @@ export const Sprites = (props) => {
     >
       {spriteProps.map((item) => (
         <Box
+          key={item.id}
           sx={{
             background:
               sprite !== item.src && sprite2 !== item.src ? "white" : "#4d97ff",
@@ -53,7 +56,7 @@ export const Sprites = (props) => {
             src={item.src}
             alt=""
             style={{
-              matginBottom: "30px",
+              marginBottom: "30px",
               height: "120px",
               width: "120px",
             }}

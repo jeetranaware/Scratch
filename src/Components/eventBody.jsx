@@ -1,4 +1,5 @@
 import * as React from "react";
+import { useEffect } from "react";
 import { SingleAction } from "./singleAction";
 import { Droppable } from "react-beautiful-dnd";
 import { Button } from "@mui/material";
@@ -12,14 +13,13 @@ import Positions from "./positons";
 import Draggable1 from "react-draggable";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { WARN_MSG_POS } from "../constants";
+import { WARN_MSG_POS, WARN_MSG_SIZE } from "../constants";
 
 export const EventBody = (props) => {
   const { moves, setMoves, actions, setActions, setActions2, actions2 } = props;
 
   const ref = React.useRef();
   const ref2 = React.useRef();
-
   let r = "0%";
   let t = "0%";
   let scale = 1;
@@ -28,22 +28,19 @@ export const EventBody = (props) => {
   let t2 = "0%";
   let scale2 = 1;
   let angle2 = 0;
-
   const [hello, setHello] = React.useState(false);
-  const [hello2] = React.useState(false);
+  const [hello2, setHello2] = React.useState(false);
   const [theme] = React.useState(false);
   const [displayAddIcon, setDisplayAddIcon] = React.useState(true);
   const [sprite, setSprite] = React.useState(
     require("../Assets/images/cat.png")
   );
   const [sprite2, setSprite2] = React.useState(null);
-
   console.log("rendering...");
   function checkCollision() {
     if (ref.current && ref2.current) {
       const rect1 = ref.current.getBoundingClientRect();
       const rect2 = ref2.current.getBoundingClientRect();
-
       return (
         rect1.x < rect2.x + rect2.width &&
         rect1.x + rect1.width > rect2.x &&
@@ -80,6 +77,57 @@ export const EventBody = (props) => {
       ? (ref.current.style.transform = `scale(${scale})translate(${r}, ${t}) rotate(${angle}deg)`)
       : (ref2.current.style.transform = `scale(${scale2})translate(${r2}, ${t2}) rotate(${angle2}deg)`);
   }
+  function handleScale(size, increase, idx, action1) {
+    if (size === "medium") {
+      scale = 2;
+      ref.current.style.transform = `scale(2) translate(${r}, ${t}) rotate(${angle}deg)`;
+      return;
+    } else if (size === "large") {
+      ref.current.style.transform = `scale(3) translate(${r}, ${t}) rotate(${angle}deg)`;
+      scale = 3;
+      return;
+    } else if (size === "small") {
+      ref.current.style.transform = `scale(1) translate(${r}, ${t}) rotate(${angle}deg)`;
+      scale = 1;
+      return;
+    } else if (increase) {
+      setTimeout(() => {
+        action1 ? (scale += 0.2) : (scale2 += 0.2);
+        if (action1) {
+          if (scale < 3) {
+            ref.current.style.transform = `scale(${scale})translate(${r}, ${t}) rotate(${angle}deg)`;
+          } else {
+            refresh(WARN_MSG_SIZE);
+          }
+        } else {
+          if (scale2 < 3) {
+            ref2.current.style.transform = `scale(${scale2})translate(${r2}, ${t2}) rotate(${angle2}deg)`;
+          } else {
+            refresh(WARN_MSG_SIZE);
+          }
+        }
+      }, idx * 1500);
+      return;
+    } else {
+      setTimeout(() => {
+        action1 ? (scale -= 0.2) : (scale2 -= 0.2);
+        if (action1) {
+          if (scale > 0.5) {
+            ref.current.style.transform = `scale(${scale})translate(${r}, ${t}) rotate(${angle}deg)`;
+          } else {
+            refresh(WARN_MSG_SIZE);
+          }
+        } else {
+          if (scale2 > 0.5) {
+            ref2.current.style.transform = `scale(${scale2})translate(${r2}, ${t2}) rotate(${angle2}deg)`;
+          } else {
+            refresh(WARN_MSG_SIZE);
+          }
+        }
+      }, idx * 1500);
+      return;
+    }
+  }
 
   function moveUp(i, action1) {
     setTimeout(() => {
@@ -97,6 +145,7 @@ export const EventBody = (props) => {
       }
     }, i * 1500);
   }
+
   function moveDown(i, action1) {
     setTimeout(() => {
       let temp = parseInt(action1 ? t.slice(0, -1) : t2.slice(0, -1));
@@ -112,6 +161,7 @@ export const EventBody = (props) => {
       }
     }, i * 1500);
   }
+
   function moveRight(i, action1) {
     setTimeout(() => {
       let temp = parseInt(action1 ? r.slice(0, -1) : r2.slice(0, -1));
@@ -128,6 +178,7 @@ export const EventBody = (props) => {
       }
     }, i * 1500);
   }
+
   function moveLeft(i, action1) {
     setTimeout(() => {
       let temp = parseInt(action1 ? r.slice(0, -1) : r2.slice(0, -1));
@@ -143,6 +194,7 @@ export const EventBody = (props) => {
       }
     }, i * 1500);
   }
+
   function handleCollision(temp, action1) {
     const otherPosition = parseInt(action1 ? r2.slice(0, -1) : r.slice(0, -1));
     const bounceBackDistance = 20;
@@ -157,6 +209,18 @@ export const EventBody = (props) => {
     swapAnimations();
   }
 
+  function sayHello(i, action1) {
+    setTimeout(() => {
+      action1 ? setHello(true) : setHello2(true);
+    }, i * 1500);
+    closeHello(i, action1);
+  }
+
+  function closeHello(i, action1) {
+    setTimeout(() => {
+      action1 ? setHello(false) : setHello2(false);
+    }, i * 1500 + 1000);
+  }
   function moveXY(xInput, yInput, random, i, action1) {
     setTimeout(() => {
       let tempR = parseInt(action1 ? r.slice(0, -1) : r2.slice(0, -1));
@@ -256,8 +320,24 @@ export const EventBody = (props) => {
         moveXY(1, 1, true, idx, action1);
         break;
       }
-      case "move (0, 0)": {
-        moveXY(0, 0, false, idx, action1);
+      case "size decrease": {
+        handleScale("", false, idx, action1);
+        break;
+      }
+      case "size increase": {
+        handleScale("", true, idx, action1);
+        break;
+      }
+      case "say hello": {
+        sayHello(idx, action1);
+        break;
+      }
+      case "when the sprite clicked": {
+        handleSpriteClick(idx, action1);
+        break;
+      }
+      case "when space key clicked": {
+        handleSpaceAction(idx, action1);
         break;
       }
 
@@ -335,20 +415,113 @@ export const EventBody = (props) => {
     }
   };
 
-  function runAction1() {
-    actions &&
-      actions.map((item, i) => {
-        startActions(item.todo, i, true);
-        return null;
-      });
+  useEffect(() => {
+    const handleKeyDown = (event) => {
+      if (event.code === "Space") {
+        console.log("Space key pressed");
+
+        const hasSpaceActionForFirstSprite = actions.some(
+          (action) => action.todo === "when space key clicked"
+        );
+
+        const hasSpaceActionForSecondSprite = actions2.some(
+          (action) => action.todo === "when space key clicked"
+        );
+
+        console.log(
+          "Space action exists for first sprite:",
+          hasSpaceActionForFirstSprite
+        );
+        console.log(
+          "Space action exists for second sprite:",
+          hasSpaceActionForSecondSprite
+        );
+
+        if (hasSpaceActionForFirstSprite) {
+          handleSpaceAction(true);
+        }
+        if (hasSpaceActionForSecondSprite) {
+          handleSpaceAction(false);
+        }
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [actions, actions2]);
+
+  function handleSpaceAction(isFirstSprite) {
+    console.log("Handling space action for sprite:", isFirstSprite);
+
+    if (isFirstSprite) {
+      if (actions.some((action) => action.todo === "when space key clicked")) {
+        console.log("Executing actions for first sprite.");
+        runAction1();
+      } else {
+        console.log("No 'when space key clicked' action for first sprite.");
+      }
+    } else {
+      if (actions2.some((action) => action.todo === "when space key clicked")) {
+        console.log("Executing actions for second sprite.");
+        runAction2();
+      } else {
+        console.log("No 'when space key clicked' action for second sprite.");
+      }
+    }
   }
-  function runAction2() {
-    !displayAddIcon &&
-      actions2 &&
-      actions2.map((item, i) => {
+
+  const runAction1 = () => {
+    actions.forEach((item, i) => {
+      if (
+        item.todo !== "when the sprite clicked" &&
+        item.todo !== "when space key clicked"
+      ) {
+        console.log(`Running action for first sprite: ${item.todo}`);
+        startActions(item.todo, i, true);
+      }
+    });
+  };
+
+  const runAction2 = () => {
+    actions2.forEach((item, i) => {
+      if (
+        item.todo !== "when the sprite clicked" &&
+        item.todo !== "when space key clicked"
+      ) {
+        console.log(`Running action for second sprite: ${item.todo}`); // Debug log
         startActions(item.todo, i, false);
-        return null;
-      });
+      }
+    });
+  };
+  function handleSpriteClick(isFirstSprite) {
+    console.log(`Sprite clicked: ${isFirstSprite ? "Sprite 1" : "Sprite 2"}`);
+    console.log(
+      "handleSpriteClick called for:",
+      isFirstSprite ? "First Sprite" : "Second Sprite"
+    );
+
+    if (isFirstSprite) {
+      console.log("Checking actions for first sprite:", actions);
+      if (actions.some((action) => action.todo === "when the sprite clicked")) {
+        console.log("Executing actions for first sprite.");
+        runAction1();
+      } else {
+        console.log("No 'when the sprite clicked' action for first sprite.");
+      }
+    } else {
+      console.log("Checking actions for second sprite:", actions2);
+      if (
+        actions2.some((action) => action.todo === "when the sprite clicked")
+      ) {
+        console.log("Executing actions for second sprite.");
+        runAction2();
+      } else {
+        console.log("No 'when the sprite clicked' action for second sprite.");
+      }
+    }
   }
 
   return (
@@ -548,6 +721,7 @@ export const EventBody = (props) => {
                   position: "relative",
                   transition: "1s all ease",
                 }}
+                onClick={() => handleSpriteClick(true)}
               >
                 {hello ? (
                   <div
@@ -577,6 +751,7 @@ export const EventBody = (props) => {
                     position: "relative",
                     transition: "1s all ease",
                   }}
+                  onClick={() => handleSpriteClick(false)}
                 >
                   {hello2 ? (
                     <div
